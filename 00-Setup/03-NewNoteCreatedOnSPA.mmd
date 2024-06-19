@@ -1,0 +1,9 @@
+sequenceDiagram
+  participant browser as browser
+  participant server as server
+
+  browser ->> browser: Form submitted, default prevented
+  browser ->> browser: Append form value to the end of the notes array and remove the first element
+  browser ->> server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+  server -->> browser: 201 Created
+
