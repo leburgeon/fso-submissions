@@ -1,6 +1,7 @@
 const Note = ({ note }) => {
     return (
-      <li>{note.content}</li>
+      <li>{note.content} <div>
+        Important: {note.important? "***" : "No"}</div></li>
     )
   }
   
