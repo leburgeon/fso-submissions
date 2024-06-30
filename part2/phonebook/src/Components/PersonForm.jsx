@@ -30,6 +30,8 @@ const PersonForm = ({setPersons, persons}) => {
   }
 
   return(
+    <>
+    <h2>add a new</h2>
     <form onSubmit={addNewPerson}>
         <div>
           name: <input value={newName} onChange={handleNewName}/>
@@ -41,6 +43,7 @@ const PersonForm = ({setPersons, persons}) => {
           <button type="submit">add</button>
         </div>
       </form>
+      </>
   )
 }
 
