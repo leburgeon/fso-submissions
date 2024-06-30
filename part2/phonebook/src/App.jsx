@@ -1,19 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PersonDisplay from './Components/PersonDisplay'
 import PersonForm from './Components/PersonForm'
 import Filter from './Components/Filter'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
-
+  const [persons, setPersons] = useState([])
   const [searchValue, setSearchValue] = useState("");
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+
+  // Effect hook for fetching phonebook data from server
+  useEffect(() => {
+    // Callback uses axios to send request to server
+    axios.get("http://localhost:3001/persons")
+    // Once the promise is fulfilled, callback added to queue
+    .then(response => {
+      // Data from response used to update persons
+      setPersons(response.data)
+    })
+  },[])
 
   // Controls the name input
   const handleNewName = (event) => {
