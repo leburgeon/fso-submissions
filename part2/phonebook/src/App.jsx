@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import PersonDisplay from './Components/PersonDisplay'
 import PersonForm from './Components/PersonForm'
+import Filter from './Components/Filter'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -11,6 +12,18 @@ const App = () => {
   ])
 
   const [searchValue, setSearchValue] = useState("");
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+
+  // Controls the name input
+  const handleNewName = (event) => {
+    setNewName(event.target.value)
+  }
+
+  // Controls the number input field
+  const handleNewNumber = (event) => {
+    setNewNumber(event.target.value)
+  }
 
   const personsToShow = persons.filter(person => 
     person.name.toLowerCase().includes(
@@ -26,8 +39,15 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      filter shown with a : <input value={searchValue} onChange={handleSearch}/>
-      <PersonForm setPersons={setPersons} persons={persons}></PersonForm>
+      <Filter searchValue={searchValue} handleSearch={handleSearch}/>
+      <PersonForm setPersons={setPersons} 
+      persons={persons} 
+      newName={newName} 
+      setNewName={setNewName} 
+      handleNewName={handleNewName} 
+      newNumber={newNumber}
+      setNewNumber={setNewNumber}
+      handleNewNumber={handleNewNumber}></PersonForm>
       <h2>Numbers</h2>
       <PersonDisplay persons={personsToShow}/>
     </div>

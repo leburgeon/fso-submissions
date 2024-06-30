@@ -1,18 +1,6 @@
 import { useState } from "react"
 
-const PersonForm = ({setPersons, persons}) => {
-    const [newName, setNewName] = useState('')
-    const [newNumber, setNewNumber] = useState('')
-
-  // Controls the name input
-  const handleNewName = (event) => {
-    setNewName(event.target.value)
-  }
-
-  // Controls the number input field
-  const handleNewNumber = (event) => {
-    setNewNumber(event.target.value)
-  }
+const PersonForm = ({setPersons, persons, newName, setNewName, newNumber, setNewNumber, handleNewName, handleNewNumber}) => {
 
   // Handles adding a new person to the phonebook
   const addNewPerson = (event) => {
