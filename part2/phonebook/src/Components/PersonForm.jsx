@@ -1,21 +1,6 @@
 import { useState } from "react"
 
-const PersonForm = ({setPersons, persons, newName, setNewName, newNumber, setNewNumber, handleNewName, handleNewNumber}) => {
-
-  // Handles adding a new person to the phonebook
-  const addNewPerson = (event) => {
-    event.preventDefault()
-    // Checks if the name is already in the phone book and sends alert to the window
-    if (persons.some((person) => person.name === newName)){
-      window.alert(`${newName} is already added to the phonebook`)
-      return
-    }
-    const newPersonObject = {
-      name: newName,
-      number: newNumber
-    }
-    setPersons(persons.concat(newPersonObject))
-  }
+const PersonForm = ({ newName, newNumber, handleNewName, handleNewNumber, addNewPerson}) => {
 
   return(
     <>
