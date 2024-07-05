@@ -54,25 +54,23 @@ const App = () => {
   // Handles adding a new person to the phonebook
   const addNewPerson = (event) => {
     event.preventDefault()
-    
     // For looping through the persons array and checking if the name is already in the phonebook
-    console.log("Checking if name in phonebook...")
-    persons.forEach(person => {
+    // Sets the updatedAPerson flag to true if name already in phonebook
+    const updatedAPerson = persons.some(person => {
       // For checking if the name is equal to the one being added
       if (person.name === newName){
-        console.log("Duplicate found!")
         if (window.confirm(`${person.name} is already in phonebook, replace the old number with a new one?`)){
           // For creating the updated person object and updating in the database
           const updatedPersonObject = {...person, number: newNumber}
-          console.log("Old person:",person)
-          console.log("Updated person:", updatedPersonObject)
           handlePersonUpdate(updatedPersonObject)
-          return
-       }
+          return true
+        } 
       }
+      return false
     })
 
-    console.log("Adding an entirely new entry")
+    // If the name is not already in the phonebook, adds a new person to the database
+    if (!updatedAPerson){
     // New person to add to the phonebook
     const newPersonObject = {
       name: newName,
@@ -85,6 +83,7 @@ const App = () => {
       setNewName("");
       setNewNumber("")
     })
+    }
   }
   
 
@@ -102,7 +101,6 @@ const App = () => {
     if (window.confirm(`Do you really want to delete ${name} from phonebook?`)){
       personService.deletePerson(id).then(deletedPerson => {
         setPersons(persons.filter(person => person.id !== deletedPerson.id))
-        console.log(`successfully deleted ${name} from database`)
       }).catch(err => {
         alert(`this person already deleted from database`)
       })

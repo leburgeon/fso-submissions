@@ -17,8 +17,7 @@ const deletePerson = (id) => {
 
 // Takes a person object with a known id, and updates the person on the server
 const updatePerson = (updatedPerson) => {
-    console.log("Update person service function with ", updatedPerson)
-    const updateRequest = axios.put(databaseUrl, updatedPerson)
+    const updateRequest = axios.put(`${databaseUrl}/${updatedPerson.id}`, updatedPerson)
     return updateRequest.then(response => response.data)
 }
 
