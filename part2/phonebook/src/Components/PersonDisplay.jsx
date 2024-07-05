@@ -1,15 +1,8 @@
-const PersonDisplay = ({persons, deletePerson}) => {
-    
+const PersonDisplay = (props) => {
+    const {persons} = props
     return(
         <>
-            {persons.map(person => {
-                return (
-                    <p key={person.name}>
-                        {person.name} {person.number}
-                        <button onClick={() => deletePerson(person)}>delete</button>
-                    </p>
-                )
-            })}
+            {persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
         </>
     )
 }

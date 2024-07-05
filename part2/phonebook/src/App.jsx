@@ -3,20 +3,14 @@ import PersonDisplay from './Components/PersonDisplay'
 import PersonForm from './Components/PersonForm'
 import Filter from './Components/Filter'
 import axios from 'axios'
-import personService from './services/persons'
 
 const App = () => {
-  // State representing the persons in the database
   const [persons, setPersons] = useState([])
-  // Controller state for the searchbar 
   const [searchValue, setSearchValue] = useState("");
-  // Controller state for the newName field
   const [newName, setNewName] = useState('')
-  // Controller state for the new number field
   const [newNumber, setNewNumber] = useState('')
 
   // Effect hook for fetching phonebook data from server
-  // Executes once, after the app has rendered
   useEffect(() => {
     // Callback uses axios to send request to server
     axios.get("http://localhost:3001/persons")
@@ -37,15 +31,8 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  // Controls the search input field
-  const handleSearch = (event) => {
-    const newSearchValue = event.target.value
-    setSearchValue(newSearchValue);
-  }
-
-  // Variable for storing the persons to display
+  // Filters persons to show based on the filter input
   const personsToShow = persons.filter(person => 
-    // Filters based on the state representing the seach value
     person.name.toLowerCase().includes(
       searchValue.toLowerCase()
     )
@@ -57,35 +44,19 @@ const App = () => {
     // Checks if the name is already in the phone book and sends alert to the window
     if (persons.some((person) => person.name === newName)){
       window.alert(`${newName} is already added to the phonebook`)
-    } else {
-      // New person to add to the phonebook
-      const newPersonObject = {
-        name: newName,
-        number: newNumber
-      }
-      // Uses the add person function from the services module
-      // This function returns a promise that resolves to the added person object
-      personService.addPerson(newPersonObject).then(addedPerson => {
-        setPersons(persons.concat(addedPerson))
-        setNewName("");
-        setNewNumber("")
-      })
+      return
     }
+    const newPersonObject = {
+      name: newName,
+      number: newNumber
+    }
+    setPersons(persons.concat(newPersonObject))
   }
 
-  // Handles deleting a person from the database
-  const deletePerson = ({id, name}) => {
-    if (window.confirm(`Do you really want to delete ${name} from phonebook?`)){
-      personService.deletePerson(id).then(deletedPerson => {
-        setPersons(persons.filter(person => person.id !== deletedPerson.id))
-        console.log(`successfully deleted ${name} from database`)
-      }).catch(err => {
-        alert(`this person already deleted from database`)
-      })
-    }
-    
+  const handleSearch = (event) => {
+    const newSearchValue = event.target.value
+    setSearchValue(newSearchValue);
   }
-  
 
   return (
     <div>
@@ -98,7 +69,7 @@ const App = () => {
       handleNewNumber={handleNewNumber}
       addNewPerson={addNewPerson}></PersonForm>
       <h2>Numbers</h2>
-      <PersonDisplay persons={personsToShow} deletePerson={deletePerson}/>
+      <PersonDisplay persons={personsToShow}/>
     </div>
   )
 }
