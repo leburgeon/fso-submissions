@@ -4,6 +4,7 @@ import PersonForm from './Components/PersonForm'
 import Filter from './Components/Filter'
 import axios from 'axios'
 import personService from './services/persons'
+import Notification from './Components/Notification'
 
 const App = () => {
   // State representing the persons in the database
@@ -14,6 +15,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   // Controller state for the new number field
   const [newNumber, setNewNumber] = useState('')
+  // State for notification message
+  const [notification, setNotification] = useState(null)
 
   // Effect hook for fetching phonebook data from server
   // Executes once, after the app has rendered
@@ -51,6 +54,14 @@ const App = () => {
     )
   )
 
+  // Displays a message for a number of seconds, takes an isError boolean, which changes the inline style
+  const displayNotification = (message, isError, seconds) => {
+    setNotification({message, isError});
+    setTimeout(() => {
+      setNotification(null)
+    }, seconds * 1000)
+  }
+
   // Handles adding a new person to the phonebook
   const addNewPerson = (event) => {
     event.preventDefault()
@@ -63,6 +74,7 @@ const App = () => {
           // For creating the updated person object and updating in the database
           const updatedPersonObject = {...person, number: newNumber}
           handlePersonUpdate(updatedPersonObject)
+          displayNotification(`Updated the contact number for ${person.name}`, false, 3)
           return true
         } 
       }
@@ -79,39 +91,49 @@ const App = () => {
     // Uses the add person function from the services module
     // This function returns a promise that resolves to the added person object
     personService.addPerson(newPersonObject).then(addedPerson => {
+      displayNotification(`Successfully added ${addedPerson.name}`, false, 3)
       setPersons(persons.concat(addedPerson))
       setNewName("");
       setNewNumber("")
     })
     }
   }
-  
 
   // Handles updating a person to the database
   const handlePersonUpdate = (updatedPerson) => {
     personService.updatePerson(updatedPerson).then(updated => {
       setPersons(persons.map(person => person.id !== updated.id ? person : updated))
+      setNewName("")
+      setNewNumber("")
+    }).catch(error => {
+      displayNotification(`Information of ${newName} has already been removed from the server, and so cannot be updated`
+        ,true
+        ,5
+      )
+      setPersons(persons.filter(person => person.id !== updatedPerson.id))
     })
-    setNewName("")
-    setNewNumber("")
   }
 
   // Handles deleting a person from the database
   const deletePerson = ({id, name}) => {
     if (window.confirm(`Do you really want to delete ${name} from phonebook?`)){
       personService.deletePerson(id).then(deletedPerson => {
+        displayNotification(`${name} successfully deleted from the database`
+          ,false
+          ,3
+        )
         setPersons(persons.filter(person => person.id !== deletedPerson.id))
       }).catch(err => {
-        alert(`this person already deleted from database`)
+        displayNotification(`${name} is already deleted from the database`, true, 4)
+        setPersons(persons.filter(person => person.id !== id))
       })
     }
-    
   }
   
-
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification}/>
       <Filter searchValue={searchValue} handleSearch={handleSearch}/>
       <PersonForm
       newName={newName} 
