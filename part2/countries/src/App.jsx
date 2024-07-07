@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import countriesService from './services/Countries'
+import CountriesDisplay from "./components/CountriesDisplay"
 
 const App = () => {
   const [searchValue, setSearchValue] = useState('')
@@ -27,7 +28,7 @@ const App = () => {
   return (
     <>
       <input value={searchValue} onChange={handleSearchValueChange}/>
-      <h1>{countriesToShow.length}</h1>
+      <CountriesDisplay countries={countriesToShow}/>
     </>
   )
 }
