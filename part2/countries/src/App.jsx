@@ -8,16 +8,26 @@ const App = () => {
   // Initialised to empty array to avoid error when filter occurs
   const [allCountries, setAllCountries] = useState([])
 
+  // Controller for the search input element
+  const handleSearchValueChange = (event) => {
+    setSearchValue(event.target.value)
+  }
+
   // Effect executes after first render, and retrieves all the countries data
   useEffect(() => {
     console.log("effect called")
     countriesService.retrieveAllCountries().then(data => setAllCountries(data))
   }, [])
 
+  // Filters the countries based on search field
+  const countriesToShow = allCountries.filter(country => {
+    return country.name.common.toLowerCase().includes(searchValue.toLowerCase())
+  })
 
   return (
     <>
-      <h1>{allCountries.length}</h1>
+      <input value={searchValue} onChange={handleSearchValueChange}/>
+      <h1>{countriesToShow.length}</h1>
     </>
   )
 }
