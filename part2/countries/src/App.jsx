@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import countriesService from './services/countries'
 import CountriesDisplay from "./components/CountriesDisplay"
+import getWeatherForCountry from "./services/weather"
 
 const App = () => {
   const [searchValue, setSearchValue] = useState('')
@@ -16,7 +17,6 @@ const App = () => {
 
   // Effect executes after first render, and retrieves all the countries data
   useEffect(() => {
-    console.log("effect called")
     countriesService.retrieveAllCountries().then(data => setAllCountries(data))
   }, [])
 

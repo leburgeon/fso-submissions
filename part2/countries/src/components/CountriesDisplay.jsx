@@ -11,14 +11,11 @@ const CountriesDisplay = ({countries}) => {
 
     // Function for toggling the display attribute for a country in the to display state
     const toggleDisplay = (countryOfficialName) => {
-        console.log("Toggle display called")
         setCountriesToDisplay(countriesToDisplay.map(country =>{
             return country.name.official === countryOfficialName
                 ? {...country, showDetail : !country.showDetail} : country
         }))
     }
-
-    console.log("Countries display called")
     if (countriesToDisplay.length > 10){
         return (
             <p>Too many matches, specify another filter</p>

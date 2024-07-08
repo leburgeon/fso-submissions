@@ -1,6 +1,5 @@
 import WeatherDisplay from "./WeatherDisplay"
 const DetailedCountry = ({country}) => {
-    console.log(country)
     const {name, capital, area, languages, flags} = country
     return (
         <div>
@@ -11,7 +10,7 @@ const DetailedCountry = ({country}) => {
             <ul>
                 {Object.values(languages).map(lan => {
                     return <li key={lan}>{lan}</li>
-                })}
+         })}
             </ul>
             <img src={flags.png} alt={flags.alt}/>
             <WeatherDisplay country={country}/>
