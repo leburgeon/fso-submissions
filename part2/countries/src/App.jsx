@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-import countriesService from './services/Countries'
+import countriesService from './services/countries'
 import CountriesDisplay from "./components/CountriesDisplay"
 
 const App = () => {
@@ -24,16 +24,6 @@ const App = () => {
   const countriesToShow = allCountries.filter(country => {
     return country.name.common.toLowerCase().includes(searchValue.toLowerCase())
   })
-
-  // Function for toggling the display attribute for a country
-  const toggleDisplay = (countryOfficialName) => {
-    countriesToShow.map(country => {
-      if (!country.toggleDisplay){
-        return {...country, toggleDisplay: true}
-      }
-      return {...country, toggleDisplay: false}
-    })
-  }
 
   return (
     <>

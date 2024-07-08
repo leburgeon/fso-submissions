@@ -1,3 +1,4 @@
+import WeatherDisplay from "./WeatherDisplay"
 const DetailedCountry = ({country}) => {
     console.log(country)
     const {name, capital, area, languages, flags} = country
@@ -13,6 +14,7 @@ const DetailedCountry = ({country}) => {
                 })}
             </ul>
             <img src={flags.png} alt={flags.alt}/>
+            <WeatherDisplay country={country}/>
         </div>
     )
 }
