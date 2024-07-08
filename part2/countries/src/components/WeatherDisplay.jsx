@@ -30,7 +30,7 @@ const WeatherDisplay = ({country}) => {
             <h2>Current weather in {country.capital[0]}:</h2>
             <p>{description}</p>
             <p>Temperature: {currentWeatherData.temp} Celcius</p>
-            <p>Wind: {currentWeatherData.wind_speed} m/s</p>
+            <p>Wind: {currentWeatherData.wind_speed} {"(m/s)"}</p>
             <img src={weatherIconUrl} alt={`Icon of ${description}`}/>
         </div>
     )
