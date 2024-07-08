@@ -1,6 +1,6 @@
 const DetailedCountry = ({country}) => {
     console.log(country)
-    const {name, capital, area, languages, flags} = country[0]
+    const {name, capital, area, languages, flags} = country
     return (
         <div>
             <h1>{name.common}</h1>

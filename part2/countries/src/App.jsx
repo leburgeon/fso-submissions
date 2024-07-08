@@ -25,6 +25,16 @@ const App = () => {
     return country.name.common.toLowerCase().includes(searchValue.toLowerCase())
   })
 
+  // Function for toggling the display attribute for a country
+  const toggleDisplay = (countryOfficialName) => {
+    countriesToShow.map(country => {
+      if (!country.toggleDisplay){
+        return {...country, toggleDisplay: true}
+      }
+      return {...country, toggleDisplay: false}
+    })
+  }
+
   return (
     <>
       <input value={searchValue} onChange={handleSearchValueChange}/>
