@@ -22,11 +22,11 @@ const App = () => {
   // Executes once, after the app has rendered
   useEffect(() => {
     // Callback uses axios to send request to server
-    axios.get("http://localhost:3001/persons")
+    personService.getAll()
     // Once the promise is fulfilled, callback added to queue
-    .then(response => {
+    .then(data => {
       // Data from response used to update persons
-      setPersons(response.data)
+      setPersons(data)
     })
   },[])
 
@@ -122,7 +122,7 @@ const App = () => {
           ,false
           ,3
         )
-        setPersons(persons.filter(person => person.id !== deletedPerson.id))
+        setPersons(persons.filter(person => person.id !== id))
       }).catch(err => {
         displayNotification(`${name} is already deleted from the database`, true, 4)
         setPersons(persons.filter(person => person.id !== id))
