@@ -55,63 +55,75 @@ const App = () => {
   )
 
   // Displays a message for a number of seconds, takes an isError boolean, which changes the inline style
-  const displayNotification = (message, isError, seconds) => {
+  const displayNotification = (message, isError = false, seconds = 5) => {
     setNotification({message, isError});
     setTimeout(() => {
       setNotification(null)
     }, seconds * 1000)
   }
 
-  // Handles adding a new person to the phonebook
-  const addNewPerson = (event) => {
+  // Handles the add button press event
+  const handleAdd = (event) => {
     event.preventDefault()
-    // For looping through the persons array and checking if the name is already in the phonebook
-    // Sets the updatedAPerson flag to true if name already in phonebook
-    const updatedAPerson = persons.some(person => {
-      // For checking if the name is equal to the one being added
-      if (person.name === newName){
-        if (window.confirm(`${person.name} is already in phonebook, replace the old number with a new one?`)){
-          // For creating the updated person object and updating in the database
-          const updatedPersonObject = {...person, number: newNumber}
-          handlePersonUpdate(updatedPersonObject)
-          displayNotification(`Updated the contact number for ${person.name}`, false, 3)
-          return true
-        } 
-      }
-      return false
-    })
 
-    // If the name is not already in the phonebook, adds a new person to the database
-    if (!updatedAPerson){
-    // New person to add to the phonebook
+    const personWithSameName = persons.find(person => person.name === newName)
+
+    console.log("After finding", personWithSameName)
+
+    if (!personWithSameName){
+      console.log("New person called", (!personWithSameName))
+      addNewPerson()
+    } else {
+      if (window.confirm(`${newName} is already in phonebook, replace the old number with a new one?`)){
+        const updatedPersonObject = {...personWithSameName, number: newNumber}
+        updatePerson(updatedPersonObject)
+        displayNotification(`Updated the contact number for ${newName}`, false, 3)
+      } 
+    }
+  }
+
+  // Function uses newName and newNumber states and adds a new contact to the phonebook
+  const addNewPerson = () => {
     const newPersonObject = {
       name: newName,
       number: newNumber
     }
-    // Uses the add person function from the services module
-    // This function returns a promise that resolves to the added person object
-    personService.addPerson(newPersonObject).then(addedPerson => {
-      displayNotification(`Successfully added ${addedPerson.name}`, false, 3)
-      setPersons(persons.concat(addedPerson))
-      setNewName("");
-      setNewNumber("")
-    })
-    }
+    personService.addPerson(newPersonObject)
+      .then(addedPerson => {
+        displayNotification(`Successfully added ${addedPerson.name}`, false, 3)
+        setPersons(persons.concat(addedPerson))
+        setNewName("");
+        setNewNumber("")
+      })
+      .catch(({response : {data : {error}}}) => {
+        if (error) {
+          displayNotification(error, true, 3)
+        } else {
+          displayNotification("Could not add person to contacts", true)
+        }
+      })
   }
-
-  // Handles updating a person to the database
-  const handlePersonUpdate = (updatedPerson) => {
-    personService.updatePerson(updatedPerson).then(updated => {
-      setPersons(persons.map(person => person.id !== updated.id ? person : updated))
-      setNewName("")
-      setNewNumber("")
-    }).catch(error => {
-      displayNotification(`Information of ${newName} has already been removed from the server, and so cannot be updated`
-        ,true
-        ,5
-      )
-      setPersons(persons.filter(person => person.id !== updatedPerson.id))
-    })
+  
+  // Takes an updated person, and updates the person to the db
+  const updatePerson = (updatedPerson) => {
+    personService.updatePerson(updatedPerson)
+      .then(updated => {
+        setPersons(persons.map(person => person.id !== updated.id ? person : updated))
+        setNewName("")
+        setNewNumber("")
+      })
+      .catch(error => {
+        console.log(error)
+        const validationErr = error.response.data.error
+        if (validationErr){
+          displayNotification(validationErr, true)
+        } else {
+          displayNotification(`Information of ${newName} has already been removed from the server, and so cannot be updated`
+            ,true
+            ,5
+          )
+        }
+      })
   }
 
   // Handles deleting a person from the database
@@ -140,7 +152,7 @@ const App = () => {
       handleNewName={handleNewName} 
       newNumber={newNumber}
       handleNewNumber={handleNewNumber}
-      addNewPerson={addNewPerson}></PersonForm>
+      addNewPerson={handleAdd}></PersonForm>
       <h2>Numbers</h2>
       <PersonDisplay persons={personsToShow} deletePerson={deletePerson}/>
     </div>

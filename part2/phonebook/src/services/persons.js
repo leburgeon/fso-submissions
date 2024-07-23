@@ -3,9 +3,8 @@ import axios from "axios";
 const databaseUrl = "/api/persons"
 
 // Gets all persons from the api
-const getAll = () => {
-    return axios.get(databaseUrl).then(response => response.data)
-}
+const getAll = () => axios.get(databaseUrl).then(response => response.data)
+
 
 // Takes a person object and adds them to the server
 const addPerson = (person) => {
