@@ -7,14 +7,13 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', async (request, response) => {
+  // Creates a mongoose document from the request body
   const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
+  // Awaits for the returned added document from mongo
+  const addedBlog = await blog.save()
+  // Sets the response status and sends the response as a json
+  response.status(201).json(addedBlog)
 })
 
 module.exports = blogsRouter

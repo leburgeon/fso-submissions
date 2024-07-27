@@ -1,3 +1,4 @@
+const Blog = require('../models/blog')
 const initialBlogs =[
   {
     title: "React patterns",
@@ -31,4 +32,21 @@ const initialBlogs =[
   }
 ];
 
-module.exports = { initialBlogs }
+const blogToAdd = {
+  title: "Blog added in test",
+  author: "foody mc bar",
+  url: "http://www.wikileaks.com",
+  likes: 17
+}
+
+const blogWithoutLikesProperty = {
+  title: "A blog that is added in test without likes property",
+  author: "foody mc bar",
+  url: "http://www.wikileaks.com",
+}
+
+const blogsInDB = async () => {
+  return await Blog.find({})
+}
+
+module.exports = { initialBlogs, blogsInDB, blogToAdd, blogWithoutLikesProperty }
