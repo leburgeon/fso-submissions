@@ -44,4 +44,9 @@ const blogsInDB = async () => {
   return await Blog.find({})
 }
 
-module.exports = { initialBlogs, blogsInDB, blogToAdd }
+const firstBlog = async () => {
+  const allBlogs = await blogsInDB()
+  return allBlogs[0]
+}
+
+module.exports = { initialBlogs, blogsInDB, blogToAdd, firstBlog }

@@ -10,7 +10,7 @@ const { application } = require('express')
 
 const api = supertest(app)
 
-describe('when the database is reset with some blogs added', () => {
+describe.only('when the database is reset with some blogs added', () => {
 
   beforeEach(async() => {
     await Blog.deleteMany({})
@@ -119,6 +119,34 @@ describe('when the database is reset with some blogs added', () => {
       const error = await api.delete(`/api/blogs/${invalidId}`)
         .expect(400)
     })
+  })
+
+  describe.only('updating a blog', () => {
+    test.only("succeeds in increasing the likes", async () => {
+      const firstBlog = await helper.firstBlog()
+
+      const updated = {
+        title: firstBlog.title,
+        url: firstBlog.url,
+        likes: firstBlog.likes + 1,
+        author:firstBlog.author
+      }
+
+      const response = await api
+        .put(`/api/blogs/${firstBlog.id}`)
+        .send(updated)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(response.body.likes, updated.likes)
+    })
+
+    test.only('with an invalid id returns status code 400 bad request', async () => {
+      const invalidId = '1234'
+      await api.put(`/api/blogs/${invalidId}`)
+        .expect(400)
+    })
+
   })
   
 })
