@@ -39,14 +39,9 @@ const blogToAdd = {
   likes: 17
 }
 
-const blogWithoutLikesProperty = {
-  title: "A blog that is added in test without likes property",
-  author: "foody mc bar",
-  url: "http://www.wikileaks.com",
-}
 
 const blogsInDB = async () => {
   return await Blog.find({})
 }
 
-module.exports = { initialBlogs, blogsInDB, blogToAdd, blogWithoutLikesProperty }
+module.exports = { initialBlogs, blogsInDB, blogToAdd }
