@@ -41,7 +41,8 @@ const blogToAdd = {
 
 
 const blogsInDB = async () => {
-  return await Blog.find({})
+  const blogs = await Blog.find({})
+  return blogs.map(blogDoc => blogDoc.toJSON())
 }
 
 const firstBlog = async () => {
