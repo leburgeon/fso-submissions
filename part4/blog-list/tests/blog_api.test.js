@@ -4,13 +4,110 @@ const assert = require('node:assert')
 const supertest = require('supertest')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
-const blog = require('../models/blog')
+const User = require('../models/user')
 const mongoose = require('mongoose')
-const { application } = require('express')
+const bcryptjs = require('bcryptjs')
 
 const api = supertest(app)
 
-describe.only('when the database is reset with some blogs added', () => {
+describe('When the database has one user added', () => {
+  beforeEach(async () => {
+    // This method deletes all the users in the collection maching the query
+    await User.deleteMany({})
+    const { username, name, password } = helper.initialUser
+    // Created the hash of the password to store in the db
+    const passwordHash = await bcryptjs.hash(password, 10)
+
+    const user = new User({
+      username, 
+      name,
+      passwordHash,
+    })
+
+    await user.save()
+  })
+
+  test('adding a user with a fresh username succeeds', async () => {
+    const newUser = {
+      username:"frshuser",
+      name:"testname",
+      password:"Strongp4ssw0r!d"
+    }
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const users = await helper.usersInDb()
+    const usernames = users.map(user => user.username)
+    assert(usernames.includes(newUser.username))
+  })
+
+  test('adding a user with a duplicate username returns 400 and error message', async () => {
+    const { username } = helper.initialUser
+    const user = {
+      username,
+      password:"superStrongpassword",
+      name:"thistestyname"
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const errorMessage = response.body.error
+    assert(errorMessage.includes('username must be unique'))
+  })
+
+  test('adding a user without a password fails, returns 400 and correct message', async () => {
+    const user = {
+      username: 'uniqu3username', 
+      name: 'nameyly'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(response.body.error === 'password required')
+
+    const users = await User.find({})
+    const usernames = users.map(user => user.username)
+
+    assert(usernames.includes('groot'))
+    assert(!usernames.includes('uniqu3username'))
+  })
+
+  test('adding a user with a weak password fails. returns 400 and correct error message', async () => {
+    const user = {
+      username: 'uniqu3username', 
+      name: 'nameyly',
+      password: 'vwk'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    assert(response.body.error === 'password too weak, try again')
+
+    const users = await User.find({})
+    const usernames = users.map(user => user.username)
+
+    assert(usernames.includes('groot'))
+    assert(!usernames.includes('uniqu3username'))
+  })
+
+})
+
+describe('when the database is reset with some blogs added', () => {
 
   beforeEach(async() => {
     await Blog.deleteMany({})
@@ -121,8 +218,8 @@ describe.only('when the database is reset with some blogs added', () => {
     })
   })
 
-  describe.only('updating a blog', () => {
-    test.only("succeeds in increasing the likes", async () => {
+  describe('updating a blog', () => {
+    test("succeeds in increasing the likes", async () => {
       const firstBlog = await helper.firstBlog()
 
       const updated = {
@@ -141,7 +238,7 @@ describe.only('when the database is reset with some blogs added', () => {
       assert.strictEqual(response.body.likes, updated.likes)
     })
 
-    test.only('with an invalid id returns status code 400 bad request', async () => {
+    test('with an invalid id returns status code 400 bad request', async () => {
       const invalidId = '1234'
       await api.put(`/api/blogs/${invalidId}`)
         .expect(400)
