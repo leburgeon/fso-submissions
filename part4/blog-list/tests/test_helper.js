@@ -39,6 +39,12 @@ const blogToAdd = {
   likes: 17
 }
 
+const initialUser = {
+  username: 'groot',
+  name: 'rootuser',
+  password: 'superStrong10!',
+}
+
 
 const blogsInDB = async () => {
   const blogs = await Blog.find({})
@@ -50,4 +56,4 @@ const firstBlog = async () => {
   return allBlogs[0]
 }
 
-module.exports = { initialBlogs, blogsInDB, blogToAdd, firstBlog }
+module.exports = { initialBlogs, blogsInDB, blogToAdd, firstBlog, initialUser }
