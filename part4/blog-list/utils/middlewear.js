@@ -30,6 +30,21 @@ const newPasswordValidator = (req, res, next) => {
   next()
 }
 
+const tokenExtractor = (req, res, next) => {
+  // Retrieves the value associated with 'authorization' header
+  const authorization = req.get('authorization')
+
+  // If the string starts with 'Bearer' (the scheme for authenticating)
+  if (authorization && authorization.startsWith('Bearer ')){
+    req.token = authorization.replace('Bearer ', '')
+    return next()
+  }
+
+  const authError = new Error('Must provide token with bearer scheme')
+  authError.name = 'AuthorizationError'
+  next(authError)
+}
+
 const errorHandler = (err, req, res, next) => {
   logger.error(err.message)
   if (err.name === 'ValidationError'){
@@ -41,8 +56,10 @@ const errorHandler = (err, req, res, next) => {
     .end()
   } else if (err.name === 'PasswordValidationError'){
     res.status(400).send({error: err.message})
+  } else if (err.name === 'AuthorizationError'){
+    res.status(400).send({error: 'must include token with bearer scheme'})
   }
   next(err)
 }
 
-module.exports = { errorHandler, idValidationMiddlewear, newPasswordValidator }
+module.exports = { errorHandler, idValidationMiddlewear, newPasswordValidator, tokenExtractor }
