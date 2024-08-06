@@ -1,9 +1,10 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { idValidationMiddlewear, tokenExtractor } = require('../utils/middlewear')
+const { idValidationMiddlewear, tokenExtractor, userExtractor } = require('../utils/middlewear')
 const config = require('../utils/config')
 const jwt = require('jsonwebtoken')
+const errors = require('../utils/errors')
 
 blogsRouter.use('/:id', idValidationMiddlewear)
 
@@ -12,24 +13,8 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.post('/', tokenExtractor, async (req, res, next) => {
-  // Retrieves the token from the request body
-  const { token } = req
-
-  // Verifies the token using the env SECRET
-  const decoded = jwt.verify(token, config.SECRET)
-
-  // If the token is invalid, returns status and error
-  if (!(decoded && decoded.id)){
-    return res.status(401).json({error: 'token invalid'})
-  }
-
-  // Finds the user using the user id in the payload
-  const user = await User.findById(decoded.id)
-
-  if (!user){
-    return res.status(401).json({error: 'user not found'})
-  }
+blogsRouter.post('/', userExtractor, async (req, res, next) => {
+  const user = req.user
 
   // Adds the new blog to the server using the request body and the found users id
   const blog = new Blog({...req.body, user: user._id})
@@ -43,26 +28,13 @@ blogsRouter.post('/', tokenExtractor, async (req, res, next) => {
 })
 
 
-blogsRouter.delete('/:id', tokenExtractor, async (req, res, next) => {
-  // Retrieves the token from the request body
-  const { token } = req
-
-  // Verifies the token using the env SECRET
-  const decoded = jwt.verify(token, config.SECRET)
-
-  // If the token is invalid, returns status and error
-  if (!(decoded && decoded.id)){
-    return res.status(401).json({error: 'token invalid'})
-  }
-
-  const user = await User.findById(decoded.id)
+blogsRouter.delete('/:id', userExtractor, async (req, res, next) => {
+  const user = req.user
   
   const blog = await Blog.findById(req.params.id)
 
   if (!blog.user.toString() === user._id.toString()){
-    const authorizationError = new Error('This user does not have authorisation to perform this action')
-    authorizationError.name = 'AuthorisationError'
-    return next(authorizationError)
+    return next(errors.authorizationError) 
   } 
 
   // For removing the blog from the list of blog ids on the user

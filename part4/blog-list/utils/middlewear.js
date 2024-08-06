@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 const logger = require('../utils/logger')
 const { passwordStrength } = require('check-password-strength')
+const errors = require('./errors')
+const jwt = require('jsonwebtoken')
+const config = require('./config')
+const User = require('../models/user')
 
 const idValidationMiddlewear = (req, res, next) => {
   const id = req.params.id
@@ -40,9 +44,32 @@ const tokenExtractor = (req, res, next) => {
     return next()
   }
 
-  const authError = new Error('Must provide token with bearer scheme')
-  authError.name = 'AuthorizationError'
-  next(authError)
+  
+}
+
+const userExtractor = async (req, res, next) => {
+  // Gets the token from the authorization header and seperates it
+  const authorization = req.get('authorization')
+  if (!(authorization && authorization.startsWith('Bearer '))){
+    return next(errors.missingTokenError)
+  }
+  const token = authorization.replace('Bearer ', '')
+
+  // Verifies the token against the secret and decodes it
+  const validToken = jwt.verify(token, config.SECRET)
+  if (!(validToken && validToken.id)){
+    return next(errors.invalidTokenError)
+  }
+
+  // Retrieves the user based on the id in the token
+  const user = await User.findById(validToken.id)
+  if (!user){
+    return next(errors.invalidUserError)
+  }
+
+  // Sets the user field of the request to the user found with the token id
+  req.user = user
+  next()
 }
 
 const errorHandler = (err, req, res, next) => {
@@ -58,8 +85,16 @@ const errorHandler = (err, req, res, next) => {
     res.status(400).send({error: err.message})
   } else if (err.name === 'AuthorizationError'){
     res.status(400).send({error: 'must include token with bearer scheme'})
+  } else if (err.name === 'JsonWebTokenError'){
+    res.status(401).send({error: 'invalid token signature'})
+  } else if (err.name === 'AuthenticationError'){
+    res.status(401).send({error: err.message})
+  } else if (err.name === 'TokenExpiredError'){
+    res.status(401).send({error: 'Token expired, re login'})
+  } else if (err.name === 'MissingTokenError'){
+    res.status(401).send({error: err.message})
   }
   next(err)
 }
 
-module.exports = { errorHandler, idValidationMiddlewear, newPasswordValidator, tokenExtractor }
+module.exports = { errorHandler, idValidationMiddlewear, newPasswordValidator, userExtractor, tokenExtractor }

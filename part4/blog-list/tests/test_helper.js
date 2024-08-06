@@ -1,5 +1,8 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
+
 const initialBlogs =[
   {
     title: "React patterns",
@@ -31,7 +34,7 @@ const initialBlogs =[
     url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
     likes: 0
   }
-];
+]
 
 const blogToAdd = {
   title: "Blog added in test",
@@ -44,6 +47,18 @@ const initialUser = {
   username: 'groot',
   name: 'rootuser',
   password: 'superStrong10!',
+}
+
+
+const validUser = async () => {
+  const users = await User.find({username: initialUser.username})
+  return users[0]
+}
+
+const tempToken = async () => {
+  const { username, _id:id } = await validUser()
+
+  return jwt.sign({username, id}, config.SECRET, {expiresIn: 120})
 }
 
 const usersInDb = async () => {
@@ -61,4 +76,4 @@ const firstBlog = async () => {
   return allBlogs[0]
 }
 
-module.exports = { initialBlogs, blogsInDB, blogToAdd, firstBlog, initialUser, usersInDb }
+module.exports = { validUser, initialBlogs, blogsInDB, blogToAdd, firstBlog, initialUser, usersInDb, tempToken }
