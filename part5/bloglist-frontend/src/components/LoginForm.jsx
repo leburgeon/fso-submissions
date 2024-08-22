@@ -12,7 +12,7 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
         onChange={({target}) => setPassword(target.value)}
         name="Password" autoComplete="current-password"
       />
-      <br></br>
+      <br/>
       <button type="submit">Login</button>
     </form>
   </>
