@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 
 const App = () => {
@@ -14,12 +16,7 @@ const App = () => {
   const [showMessage, setShowMessage] = useState(false)
   const [message, setMessage] = useState('')
 
-  // States for the new blog data
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-
+  const newBlogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -50,17 +47,13 @@ const App = () => {
     }
   }
 
-  const handleCreateNote = async event => {
-    event.preventDefault()
-    const blogToAdd = {title, author, url}
+  const handleCreateBlog = async (newBlog) => {
     try {
       blogService.setToken(user.token)
-      const addedBlog = await blogService.create(blogToAdd)
+      const addedBlog = await blogService.create(newBlog)
       setBlogs(prevBlogs => [...prevBlogs, addedBlog])
       notify(`A new blog '${addedBlog.title}' by ${addedBlog.author} added`)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      newBlogFormRef.current.toggleVisibility()
     } catch {
       notify('blog not added')
     }
@@ -97,20 +90,9 @@ const App = () => {
   )
 
   const displayCreateBlogForm = () => (
-    <>
-    <h2>create</h2>
-    <form onSubmit={handleCreateNote}>
-      title:
-      <input type='text' value={title} onChange={({ target }) => setTitle(target.value)}/>
-      <br/>
-      author:
-      <input type='text' value={author} onChange={({ target }) => setAuthor(target.value)}/>
-      <br/>
-      url:
-      <input type='text' value={url} onChange={({ target }) => setUrl(target.value)}/>
-      <button type='submit'>create note</button>
-    </form>
-    </>
+    <Togglable labelName='Create Blog Post' ref={newBlogFormRef}>
+      <BlogForm handleCreateBlog={handleCreateBlog}/>
+    </Togglable>
   )
 
   return (
