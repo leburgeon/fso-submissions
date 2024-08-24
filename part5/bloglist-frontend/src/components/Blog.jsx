@@ -12,6 +12,8 @@ const Blog = ({ blog, handleLike }) => {
     console.log(blog)
   }
 
+  const displayUserDetails = blog.user ? blog.user.username : 'anon'
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -33,6 +35,7 @@ const Blog = ({ blog, handleLike }) => {
           <button onClick={() => handleLike(blog)}>Like</button>
         </div>
         <a href={blog.url}>{blog.url}</a>
+        <div>{displayUserDetails}</div>
         <br/>
         <button onClick={toggleShowDetails}>Hide details</button>
       </div>
