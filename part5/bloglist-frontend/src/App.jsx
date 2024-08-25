@@ -19,10 +19,17 @@ const App = () => {
   const newBlogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+    const fetchBlogs = async () => {
+      try {
+        const blogs = await blogService.getAll()
+        setBlogs(blogs)
+        sortBlogs()
+      } catch (error) {
+        console.error('Failed to fetch blogs:', error);
+      }
+    };
+    fetchBlogs();
+  }, []);
 
   useEffect(() => {
     const userFromLocal = localStorage.getItem('loggedInNotesUser')
@@ -31,6 +38,14 @@ const App = () => {
       // Wil need to add token to service module for adding a note
     }
   }, [])
+
+
+  const sortBlogs = () => {
+    setBlogs(oldBlogs => {
+      const sorted = [...oldBlogs]
+      return sorted.sort((a, b) => a.likes - b.likes)
+    })
+  }
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -54,6 +69,7 @@ const App = () => {
     setBlogs(oldBlogs => {
       return oldBlogs.map(blog => (blog.id !== returnedBlog.id) ? blog : returnedBlog)
     })
+    sortBlogs();
   }
 
   const handleCreateBlog = async (newBlog) => {
