@@ -25,11 +25,11 @@ const App = () => {
         setBlogs(blogs)
         sortBlogs()
       } catch (error) {
-        console.error('Failed to fetch blogs:', error);
+        console.error('Failed to fetch blogs:', error)
       }
-    };
-    fetchBlogs();
-  }, []);
+    }
+    fetchBlogs()
+  }, [])
 
   useEffect(() => {
     const userFromLocal = localStorage.getItem('loggedInNotesUser')
@@ -50,7 +50,7 @@ const App = () => {
   const handleLogin = async event => {
     event.preventDefault()
     try {
-      const returnedUser = await loginService.login({username, password})
+      const returnedUser = await loginService.login({ username, password })
       console.log('returned user',returnedUser)
       setUser(returnedUser)
       blogService.setToken(returnedUser.token)
@@ -63,13 +63,13 @@ const App = () => {
   }
 
   const handleLikeBlog = async blogToLike => {
-    const updatedLikesBlog = {...blogToLike, likes: (blogToLike.likes + 1)}
+    const updatedLikesBlog = { ...blogToLike, likes: (blogToLike.likes + 1) }
     const returnedBlog = await blogService.update(updatedLikesBlog)
 
     setBlogs(oldBlogs => {
       return oldBlogs.map(blog => (blog.id !== returnedBlog.id) ? blog : returnedBlog)
     })
-    sortBlogs();
+    sortBlogs()
   }
 
   const handleCreateBlog = async (newBlog) => {
@@ -126,11 +126,11 @@ const App = () => {
       }}>log out</button>
       <h2>blogs</h2>
       {blogs.map(blog =>
-        
-          <Blog key={blog.id} blog={blog} handleLike={handleLikeBlog} handleDelete={handleDeleteBlog}/>
-        
-          )}
-      
+
+        <Blog key={blog.id} blog={blog} handleLike={handleLikeBlog} handleDelete={handleDeleteBlog}/>
+
+      )}
+
     </>
   )
 
@@ -146,7 +146,7 @@ const App = () => {
       {!user && displayLoginForm()}
       {user && displayBlogs()}
       {user && displayCreateBlogForm()}
-      
+
     </div>
   )
 }
