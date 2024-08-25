@@ -27,10 +27,9 @@ blogsRouter.post('/', userExtractor, async (req, res, next) => {
   res.status(201).json(addedBlog)
 })
 
-
+// Del route
 blogsRouter.delete('/:id', userExtractor, async (req, res, next) => {
   const user = req.user
-  
   const blog = await Blog.findById(req.params.id)
 
   if (!blog){
