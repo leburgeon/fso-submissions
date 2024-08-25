@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogs from "../services/blogs"
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleDelete }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const hideWhenVisible = {display: showDetails? 'none' : ''}
@@ -26,6 +26,7 @@ const Blog = ({ blog, handleLike }) => {
     <div style={blogStyle}>
       <div>
         {blog.title} {blog.author}
+        <button onClick={() => handleDelete(blog)}>Delete</button>
       </div>
       <div style={hideWhenVisible}>
         <button onClick={toggleShowDetails}>Show details</button>

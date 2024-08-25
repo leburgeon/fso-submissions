@@ -33,6 +33,13 @@ blogsRouter.delete('/:id', userExtractor, async (req, res, next) => {
   
   const blog = await Blog.findById(req.params.id)
 
+  if (!blog){
+    return res.status(204).end()
+  } 
+
+  if (!blog.user){
+    return res.status(401).json({error: 'that blog dont have a user'})
+  }
   if (!blog.user.toString() === user._id.toString()){
     return next(errors.authorizationError) 
   } 
