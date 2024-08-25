@@ -1,12 +1,12 @@
-import { useState } from "react"
-import blogs from "../services/blogs"
+import { useState } from 'react'
+import blogs from '../services/blogs'
 
 const Blog = ({ blog, handleLike, handleDelete }) => {
   const [showDetails, setShowDetails] = useState(false)
 
-  const hideWhenVisible = {display: showDetails? 'none' : ''}
-  const showWhenVisible = {display: showDetails? '' : 'none'}
-  
+  const hideWhenVisible = { display: showDetails? 'none' : '' }
+  const showWhenVisible = { display: showDetails? '' : 'none' }
+
   const toggleShowDetails = () => {
     setShowDetails(!showDetails)
     console.log(blog)
@@ -41,7 +41,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
         <button onClick={toggleShowDetails}>Hide details</button>
       </div>
     </div>
-  ) 
+  )
 }
 
 export default Blog

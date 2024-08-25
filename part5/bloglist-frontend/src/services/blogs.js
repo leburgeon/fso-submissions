@@ -1,7 +1,7 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-console.log("token set to null")
+console.log('token set to null')
 let token = null
 
 const setToken = userToken => {
@@ -24,7 +24,6 @@ const getAll = async () => {
 
 const create = async blogToCreate => {
   // config object for seding with the axios post request
-  
 
   const response = await axios.post(baseUrl, blogToCreate, getAuthConfig())
   return response.data
@@ -39,4 +38,4 @@ const deleteBlog = async blogID => {
   return await axios.delete(`${baseUrl}/${blogID}`, getAuthConfig())
 }
 
-export default { getAll, setToken, create, update, deleteBlog}
+export default { getAll, setToken, create, update, deleteBlog }
