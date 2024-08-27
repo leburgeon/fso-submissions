@@ -9,7 +9,6 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
 
   const toggleShowDetails = () => {
     setShowDetails(!showDetails)
-    console.log(blog)
   }
 
   const displayUserDetails = blog.user ? blog.user.username : 'anon'
@@ -23,22 +22,22 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div style={blogStyle} className='blogDiv'>
+      <div className='titleAndAuthorDiv'>
         {blog.title} {blog.author}
         <button onClick={() => handleDelete(blog)}>Delete</button>
       </div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleShowDetails}>Show details</button>
+        <button className='showButton' onClick={toggleShowDetails}>Show details</button>
       </div>
-      <div style={showWhenVisible}>
-        <div>{blog.likes} likes
-          <button onClick={() => handleLike(blog)}>Like</button>
+      <div style={showWhenVisible} className='infoDiv'>
+        <div className='likesDiv'>{blog.likes} likes
+          <button className='likeButton' onClick={() => handleLike(blog)}>Like</button>
         </div>
-        <a href={blog.url}>{blog.url}</a>
-        <div>{displayUserDetails}</div>
+        <a href={blog.url} className='blogUrl'>{blog.url}</a>
+        <div className='userDetailsDiv'>{displayUserDetails}</div>
         <br/>
-        <button onClick={toggleShowDetails}>Hide details</button>
+        <button className='hideButton' onClick={toggleShowDetails}>Hide details</button>
       </div>
     </div>
   )
