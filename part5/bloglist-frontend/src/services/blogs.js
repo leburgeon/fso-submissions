@@ -26,6 +26,7 @@ const create = async blogToCreate => {
   // config object for seding with the axios post request
 
   const response = await axios.post(baseUrl, blogToCreate, getAuthConfig())
+  console.log(response.data)
   return response.data
 }
 

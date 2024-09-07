@@ -18,14 +18,14 @@ const BlogForm = ({ handleCreateBlog }) => {
       <h2>create</h2>
       <form onSubmit={createBlog}>
         title:
-        <input className='titleInput' type='text' value={title} onChange={({ target }) => setTitle(target.value)}/>
+        <input data-testid='titleInput' className='titleInput' type='text' value={title} onChange={({ target }) => setTitle(target.value)}/>
         <br/>
         author:
-        <input className='authorInput' type='text' value={author} onChange={({ target }) => setAuthor(target.value)}/>
+        <input data-testid='authorInput' className='authorInput' type='text' value={author} onChange={({ target }) => setAuthor(target.value)}/>
         <br/>
         url:
-        <input className='urlInput' type='text' value={url} onChange={({ target }) => setUrl(target.value)}/>
-        <button className='submitButton' type='submit'>create note</button>
+        <input data-testid='urlInput' className='urlInput' type='text' value={url} onChange={({ target }) => setUrl(target.value)}/>
+        <button className='submitButton' type='submit'>save</button>
       </form>
     </>
   )
