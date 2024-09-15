@@ -5,7 +5,7 @@ const noteReducer = (state = [], action) => {
   } else if (action.type === 'TOGGLE_IMPORTANCE'){
     return state.map(note => note.id === action.payload.id ? 
       {...note, 
-        important : (!note.importance)} 
+        important : (!note.important)} 
       : note
     )
   }
