@@ -17,13 +17,31 @@ const asObject = (anecdote) => {
   }
 }
 
-const initialState = anecdotesAtStart.map(asObject)
+const initialState = {anecdotes: anecdotesAtStart.map(asObject)}
 
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
 
+  switch (action.type) {
+    // Returns a copy of the state, but with the anecdotes attribute array updated
+    case 'INCREMENT_VOTE_COUNT':
+      return {...state,
+        anecdotes: state.anecdotes.map(anecdote => 
+          // If the id is equal to the id in the payload, the anecotes vote count is incremented
+          action.payload.id !== anecdote.id? anecdote :
+          {...anecdote, votes: (anecdote.votes + 1)}
+        )
+      }
+  }
   return state
+}
+
+export const voteFor = (id) => {
+  return {
+    type: 'INCREMENT_VOTE_COUNT',
+    payload: {id}
+  }
 }
 
 export default reducer
