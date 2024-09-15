@@ -33,6 +33,11 @@ const reducer = (state = initialState, action) => {
           {...anecdote, votes: (anecdote.votes + 1)}
         )
       }
+    case 'NEW_ANECDOTE':
+      return {...state,
+        anecdotes: [...state.anecdotes, 
+          asObject(action.payload.content)]
+      }
   }
   return state
 }
@@ -41,6 +46,13 @@ export const voteFor = (id) => {
   return {
     type: 'INCREMENT_VOTE_COUNT',
     payload: {id}
+  }
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'NEW_ANECDOTE',
+    payload: {content}
   }
 }
 
