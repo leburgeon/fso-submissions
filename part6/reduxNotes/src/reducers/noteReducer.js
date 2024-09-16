@@ -1,4 +1,18 @@
-const noteReducer = (state = [], action) => {
+const initialState = [
+  {
+    content: 'reducer defines how redux store works',
+    important: true,
+    id: 1,
+  },
+  {
+    content: 'state of store can contain any data',
+    important: false,
+    id: 2,
+  },
+]
+
+
+const noteReducer = (state = initialState, action) => {
   if (action.type === 'NEW_NOTE'){
     // as concat returns a copy of the array, and does not modify the original, this reducer function remains 'pure'
     return [...state, action.payload]
