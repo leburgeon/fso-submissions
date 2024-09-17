@@ -4,15 +4,10 @@ import { useDispatch, useSelector } from "react-redux"
 
 import NewNote from "./NewNote"
 import Notes from './Notes'
-import VisibilityFilter from './VisibilityFilter'
+import VisibilityFilter from "./VisibilityFilter"
 
 const App = () => {
-  const filterSelected = (value) => {
-    console.log(value, ' selected for filtering')
-  }
-
-  
-  return (
+   return (
     <div>
       <NewNote/>
       <VisibilityFilter/>
