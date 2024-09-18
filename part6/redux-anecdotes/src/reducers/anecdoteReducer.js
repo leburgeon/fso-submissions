@@ -47,15 +47,6 @@ const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
   reducers: {
-    createAnecdote(state, action) {
-      state.push(asObject(action.payload))
-    },
-    voteFor(state, action) {
-      return state.map(anecdote => anecdote.id !== action.payload
-        ? anecdote 
-        : {...anecdote, votes: anecdote.votes +1}
-      )
-    },
     appendAnecdote(state, action) {
       state.push(action.payload)
     },
@@ -72,9 +63,10 @@ const anecdoteSlice = createSlice({
 })
 
 
-export const { createAnecdote, setAnecdotes, appendAnecdote, updateAnecdote } = anecdoteSlice.actions
+export const { setAnecdotes, appendAnecdote, updateAnecdote } = anecdoteSlice.actions
 
 // Method returns a thunk function, which dispatches an action to the store after an asynchronous operation
+// Treat the thunks as actions themselves, in termonology and practice, rtk deals with the rest
 export const initialiseAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
