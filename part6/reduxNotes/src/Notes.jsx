@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toggleImportanceOf } from "./reducers/noteReducer";
+import noteService from './services/notes'
 
 const Note = ({ note, handleClick }) => {
   return (
@@ -11,7 +12,7 @@ const Note = ({ note, handleClick }) => {
 }
 
 const Notes = () => {
-  const dispacth = useDispatch()
+  const dispatch = useDispatch()
 
   // useSelector accepts a selector function that is responsible for selecting a part of the application state
   // useSelector subscribes to the redux store and re-runs when an action is dispatched
@@ -34,8 +35,10 @@ const Notes = () => {
         <Note 
           key={note.id} 
           note={note}
-          handleClick={() => 
-            dispacth(toggleImportanceOf(note.id))
+          handleClick={async () => {
+              const updatedNote = await noteService.updateNote({...note, important: !note.important})
+              dispatch(toggleImportanceOf(updatedNote.id))
+            }
           }
         />
       )}

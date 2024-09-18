@@ -1,5 +1,7 @@
 import { createSlice, current } from "@reduxjs/toolkit"
 
+import getAll from '../services/notes'
+
 const initialState = [
   {
     content: 'reducer defines how redux store works',
@@ -60,18 +62,17 @@ const generateId = () => {
 
 const noteSlice = createSlice({
   name: 'notes',
-  initialState,
+
+  // The issue with using an asynchronous method call within the slice creator, is that the entire store is then waiting for the promise to resolve
+  // This is okay with quick fetches from a local server, but requests that take longer will block the rest of the application
+  // initialState: await getAll(),
+
+  initialState: [],
   reducers: {
     // this declares a function attribute using concise method syntax
     // the action type is generated using the method name and actions with that type will be passed to the reducer
     createNote(state, action) {
-      console.log('createcalled')
-      const content = action.payload
-      state.push({
-        content,
-        important: false,
-        id: generateId(),
-      })
+      state.push(action.payload)
     },
     // another reducer action called with the aciton type 'toggleImportanceOf'
     toggleImportanceOf(state, action) {
@@ -83,10 +84,16 @@ const noteSlice = createSlice({
         ? note
         : {...note, important: !note.important}
       )
+    },
+    appendNote(state, action) {
+      state.push(action.payload)
+    },
+    setNotes(state, action){
+      return action.payload
     }
   }
 })
 
-export const { toggleImportanceOf, createNote } = noteSlice.actions
+export const { toggleImportanceOf, createNote, appendNote, setNotes } = noteSlice.actions
 
 export default noteSlice.reducer
