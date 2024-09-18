@@ -7,10 +7,6 @@ import Filter from './components/Filter'
 import Notification from './components/Notification'
 import { useEffect } from 'react'
 
-
-import anecdoteService from './services/anecdotes'
-import { setAnecdotes } from './reducers/anecdoteReducer'
-
 import { initialiseAnecdotes } from './reducers/anecdoteReducer'
 
 

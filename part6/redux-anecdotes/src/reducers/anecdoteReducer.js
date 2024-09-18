@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, current } from "@reduxjs/toolkit"
 import anecdoteService from '../services/anecdotes'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
@@ -61,13 +61,18 @@ const anecdoteSlice = createSlice({
     },
     setAnecdotes(state, action) {
       return action.payload
+    },
+    updateAnecdote(state, action) {
+      return state.map(anecdote => anecdote.id !== action.payload.id
+        ? anecdote
+        : action.payload
+      )
     }
   }
 })
 
 
-
-export const { createAnecdote, voteFor, setAnecdotes, appendAnecdote } = anecdoteSlice.actions
+export const { createAnecdote, setAnecdotes, appendAnecdote, updateAnecdote } = anecdoteSlice.actions
 
 // Method returns a thunk function, which dispatches an action to the store after an asynchronous operation
 export const initialiseAnecdotes = () => {
@@ -77,10 +82,18 @@ export const initialiseAnecdotes = () => {
   }
 }
 
+// Inner asynchronous action dispatches the action to the store once the promise has resolved to the value of the added anecdote object from the store
 export const createNew = (content) => {
   return async dispatch => {
     const newAnecdote = await anecdoteService.createNew(content)
     dispatch(appendAnecdote(newAnecdote))
+  }
+}
+
+export const voteFor = (anecdote) => {
+  return async dispatch => {
+    const updatedAnecdote = await anecdoteService.updateAnecdote({...anecdote, votes: anecdote.votes + 1})
+    dispatch(updateAnecdote(updatedAnecdote))
   }
 }
 
