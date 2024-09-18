@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import anecdoteService from '../services/anecdotes'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
@@ -64,6 +65,23 @@ const anecdoteSlice = createSlice({
   }
 })
 
+
+
 export const { createAnecdote, voteFor, setAnecdotes, appendAnecdote } = anecdoteSlice.actions
+
+// Method returns a thunk function, which dispatches an action to the store after an asynchronous operation
+export const initialiseAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createNew = (content) => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch(appendAnecdote(newAnecdote))
+  }
+}
 
 export default anecdoteSlice.reducer
