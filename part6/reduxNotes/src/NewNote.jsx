@@ -9,10 +9,7 @@ const NewNote = () => {
     event.preventDefault()
     const content = event.target.note.value
     event.target.note.value = ''
-    const newNote = await noteService.createNew(content)
-    // Event handler waits for the response from the server, containing the newly created note object
-    // createNote action dispatched to the store with newNote from server as the payload
-    dispatch(createNote(newNote))
+    dispatch(createNote(content))
   }
 
   return (

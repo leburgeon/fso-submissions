@@ -2,6 +2,8 @@ import { createSlice, current } from "@reduxjs/toolkit"
 
 import getAll from '../services/notes'
 
+import noteService from '../services/notes'
+
 const initialState = [
   {
     content: 'reducer defines how redux store works',
@@ -94,6 +96,30 @@ const noteSlice = createSlice({
   }
 })
 
-export const { toggleImportanceOf, createNote, appendNote, setNotes } = noteSlice.actions
+
+
+export const { toggleImportanceOf, appendNote, setNotes } = noteSlice.actions
+
+// Thunks are functions that can dispatch actions to the store asynchronously.
+// Reducer functions must be pure and cannot have side effects.
+// Thunks are useful for separating logic from the UI and handling async operations outside of reducers.
+// This function returns a thunk that dispatches an action to the store after performing an async operation (fetching from a server).
+export const initialiseNotes = () => {
+  // The thunk function returned gets passed the store's dispatch function and calls it after the async operation is complete.
+  // This is an asynchronous action.
+  return async dispatch => {
+    const initialNotes = await noteService.getAll();
+    dispatch(setNotes(initialNotes));
+  };
+}
+
+// Again, this function returns a thunk, an asynchronous action that is passed the stores dispatch
+// When the inner function is passed to dispatch, dispatch calls it and passes the stores dispatch. This allows encapsulation of the asynch logic
+export const createNote = content => {
+  return async dispatch => {
+    const newNote = await noteService.createNew(content)
+    dispatch(appendNote(newNote))
+  }
+}
 
 export default noteSlice.reducer
