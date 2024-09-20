@@ -1,11 +1,29 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { addAnecdote } from "../requests"
+
 const AnecdoteForm = () => {
+  // useQueryClient gives access to the central queryclient object responsible for performing fetches/caching/updating
+  const queryClient = useQueryClient()
+
+  // TODO: create a mutation object that calls the function that would mutate server data
+  const createNoteMutation = useMutation({
+    // mutationFn attr passed to the mutation object, which is responsible for handling server updates
+    mutationFn: addAnecdote,
+    // Once the async mutationFn has resolved, the onSuccess: method is called 
+    onSuccess: (newNote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      queryClient.setQueryData(['anecdotes'], anecdotes.concat(newNote))
+    }
+  })
 
   const onCreate = (event) => {
+    // Event handler for the create anecdote button uses the mutation object.
+    // Mutation calls the functions that handle server update, and waits for response before changing quieryClient state
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    console.log('new anecdote')
-}
+    createNoteMutation.mutate({content, votes: 0, important: true})
+  }
 
   return (
     <div>
