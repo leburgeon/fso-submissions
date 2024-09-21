@@ -1,9 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addAnecdote } from "../requests"
+import { useNotify } from "../NotificationContext"
 
 const AnecdoteForm = () => {
   // useQueryClient gives access to the central queryclient object responsible for performing fetches/caching/updating
   const queryClient = useQueryClient()
+
+  const notify = useNotify()
 
   // TODO: create a mutation object that calls the function that would mutate server data
   const createNoteMutation = useMutation({
@@ -13,6 +16,10 @@ const AnecdoteForm = () => {
     onSuccess: (newNote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newNote))
+      notify(`new note: '${newNote.content}' added`)
+    },
+    onError: (error) => {
+      notify(error.response.data.error)
     }
   })
 
