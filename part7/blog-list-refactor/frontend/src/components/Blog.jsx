@@ -1,35 +1,35 @@
-import { useState } from "react";
-import blogs from "../services/blogs";
+import { useState } from 'react'
+import blogs from '../services/blogs'
 
 const Blog = ({ blog, handleLike, handleDelete, loggedInUser }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(false)
 
-  const hideWhenVisible = { display: showDetails ? "none" : "" };
-  const showWhenVisible = { display: showDetails ? "" : "none" };
+  const hideWhenVisible = { display: showDetails ? 'none' : '' }
+  const showWhenVisible = { display: showDetails ? '' : 'none' }
 
-  let deleteButtonStyle = { display: "" };
+  let deleteButtonStyle = { display: '' }
 
   if (blog.user) {
     if (blog.user.username) {
       deleteButtonStyle = {
-        display: loggedInUser.username !== blog.user.username ? "none" : "",
-      };
+        display: loggedInUser.username !== blog.user.username ? 'none' : '',
+      }
     }
   }
 
   const toggleShowDetails = () => {
-    setShowDetails(!showDetails);
-  };
+    setShowDetails(!showDetails)
+  }
 
-  const displayUserDetails = blog.user ? blog.user.username : "anon";
+  const displayUserDetails = blog.user ? blog.user.username : 'anon'
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
 
   return (
     <div style={blogStyle} className="blogDiv">
@@ -67,7 +67,7 @@ const Blog = ({ blog, handleLike, handleDelete, loggedInUser }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

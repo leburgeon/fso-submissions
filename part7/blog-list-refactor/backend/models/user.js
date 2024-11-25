@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 // Defines the schema for a new collection of users
 const userSchema = new mongoose.Schema({
@@ -19,19 +19,19 @@ const userSchema = new mongoose.Schema({
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Blog",
+      ref: 'Blog',
     },
   ],
-});
+})
 
 // Sets the toJSON method of the documents created with the resulting model
-userSchema.set("toJSON", {
+userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id;
-    delete returnedObject.passwordHash;
-    delete returnedObject._id;
-    delete returnedObject.__v;
+    returnedObject.id = returnedObject._id
+    delete returnedObject.passwordHash
+    delete returnedObject._id
+    delete returnedObject.__v
   },
-});
+})
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema)
