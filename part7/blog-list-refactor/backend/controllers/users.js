@@ -1,29 +1,28 @@
-const User = require('../models/user')
-const usersRouter = require('express').Router()
-const bcryptjs = require('bcryptjs')
-const { newPasswordValidator } = require('../utils/middlewear')
+const User = require("../models/user");
+const usersRouter = require("express").Router();
+const bcryptjs = require("bcryptjs");
+const { newPasswordValidator } = require("../utils/middlewear");
 
-usersRouter.post('/', newPasswordValidator, async (req, res, next) => {
-  const { username, name, password } = req.body
+usersRouter.post("/", newPasswordValidator, async (req, res, next) => {
+  const { username, name, password } = req.body;
 
-  const passwordHash = await bcryptjs.hash(password, 10)
+  const passwordHash = await bcryptjs.hash(password, 10);
 
   const newUser = new User({
     username,
     name,
-    passwordHash
-  })
+    passwordHash,
+  });
 
-  const savedUser = await newUser.save()
+  const savedUser = await newUser.save();
 
-  res.status(201).json(savedUser)
-})
+  res.status(201).json(savedUser);
+});
 
-usersRouter.get('/', async (req, res, next) => {
-  const users = await User.find({}).populate('blogs')
+usersRouter.get("/", async (req, res, next) => {
+  const users = await User.find({}).populate("blogs");
 
-  res.json(users)
-})
+  res.json(users);
+});
 
-
-module.exports = usersRouter 
+module.exports = usersRouter;

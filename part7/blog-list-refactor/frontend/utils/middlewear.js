@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const logger = require("./logger");
+const logger = require("./logger
 const { passwordStrength } = require("check-password-strength");
 const errors = require("./errors");
 const jwt = require("jsonwebtoken");
