@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux'
+
 const inline = {
   backgroundColor: 'grey',
   padding: '10px',
@@ -6,10 +8,17 @@ const inline = {
   textAlign: 'center',
 }
 
-const Notification = ({ message }) => (
-  <>
-    <div style={inline}>{message}</div>
-  </>
-)
+const Notification = ({ message }) => {
+  const notificaiton = useSelector(state => state.notification)
+
+  if (!notificaiton) {
+    return <></>
+  }
+  return (
+    <>
+      <div style={inline}>{notificaiton}</div>
+    </>
+  )
+}
 
 export default Notification

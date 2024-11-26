@@ -6,16 +6,18 @@ import LoginForm from './components/LoginForm'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import { useDispatch } from 'react-redux'
+import { setThenClearNotification as notify } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [showMessage, setShowMessage] = useState(false)
-  const [message, setMessage] = useState('')
 
   const newBlogFormRef = useRef()
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -55,8 +57,9 @@ const App = () => {
       localStorage.setItem('loggedInNotesUser', JSON.stringify(returnedUser))
       setUsername('')
       setPassword('')
+
     } catch (exception) {
-      notify('Failed to log in!')
+      dispatch(notify('Failed to log in!', 5))
     }
   }
 
@@ -77,10 +80,10 @@ const App = () => {
       blogService.setToken(user.token)
       const addedBlog = await blogService.create(newBlog)
       setBlogs((prevBlogs) => [...prevBlogs, addedBlog])
-      notify(`A new blog '${addedBlog.title}' by ${addedBlog.author} added`)
+      dispatch(notify(`A new blog '${addedBlog.title}' by ${addedBlog.author} added`, 5))
       newBlogFormRef.current.toggleVisibility()
     } catch {
-      notify('blog not added')
+      dispatch(notify('blog not added', 5))
     }
   }
 
@@ -94,22 +97,14 @@ const App = () => {
         })
       } catch (exception) {
         if (exception.response.data.error === 'invalid token signature') {
-          notify('you didnt post that!')
+          dispatch(notify('you didnt post that!', 5))
         } else {
-          notify(exception.response.data.error)
+          dispatch(notify(exception.response.data.error, 5))
         }
       }
     }
   }
 
-  const notify = (message) => {
-    setMessage(message)
-    setShowMessage(true)
-    setTimeout(() => {
-      setMessage('')
-      setShowMessage(false)
-    }, 3000)
-  }
 
   const displayLoginForm = () => (
     <LoginForm
@@ -153,7 +148,7 @@ const App = () => {
 
   return (
     <div>
-      {showMessage && <Notification message={message} />}
+      {<Notification/>}
       {!user && displayLoginForm()}
       {user && displayBlogs()}
       {user && displayCreateBlogForm()}
