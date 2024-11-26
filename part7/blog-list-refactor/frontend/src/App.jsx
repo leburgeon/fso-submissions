@@ -7,7 +7,8 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import { useDispatch } from 'react-redux'
-import { setThenClearNotification as notify } from './reducers/notificationReducer'
+import { setThenClearNotification as notify, setThenClearNotification } from './reducers/notificationReducer'
+import BlogList from './components/BlogList'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -32,11 +33,20 @@ const App = () => {
     fetchBlogs()
   }, [])
 
+  // Effect hook for atttempting to retrieve login data from the local storage
   useEffect(() => {
-    const userFromLocal = localStorage.getItem('loggedInNotesUser')
+    const userFromLocal = localStorage.getItem('loggedInBlogUser')
     if (userFromLocal) {
-      setUser(JSON.parse(userFromLocal))
-      // Wil need to add token to service module for adding a note
+      try {
+        const parsedUser = JSON.parse(userFromLocal)
+        setUser(parsedUser)
+        blogService.setToken(parsedUser.token)
+      } catch (e) {
+        dispatch(setThenClearNotification('Trouble, please re-login'))
+        localStorage.removeItem('loggedInBlogUser')
+        blogService.setToken(null)
+        setUser(null)
+      }
     }
   }, [])
 
@@ -54,7 +64,7 @@ const App = () => {
       console.log('returned user', returnedUser)
       setUser(returnedUser)
       blogService.setToken(returnedUser.token)
-      localStorage.setItem('loggedInNotesUser', JSON.stringify(returnedUser))
+      localStorage.setItem('loggedInBlogUser', JSON.stringify(returnedUser))
       setUsername('')
       setPassword('')
 
@@ -75,17 +85,6 @@ const App = () => {
     sortBlogs()
   }
 
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      blogService.setToken(user.token)
-      const addedBlog = await blogService.create(newBlog)
-      setBlogs((prevBlogs) => [...prevBlogs, addedBlog])
-      dispatch(notify(`A new blog '${addedBlog.title}' by ${addedBlog.author} added`, 5))
-      newBlogFormRef.current.toggleVisibility()
-    } catch {
-      dispatch(notify('blog not added', 5))
-    }
-  }
 
   const handleDeleteBlog = async (blogToDel) => {
     if (window.confirm(`Delete the blog ${blogToDel.title}?`)) {
@@ -128,22 +127,12 @@ const App = () => {
         log out
       </button>
       <h2>blogs</h2>
-      {blogs.map((blog) => (
-        <Blog
-          loggedInUser={user}
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLikeBlog}
-          handleDelete={handleDeleteBlog}
-        />
-      ))}
+      <BlogList user={user} handleLikeBlog={handleLikeBlog} handleDeleteBlog={handleDeleteBlog}/>
     </>
   )
 
   const displayCreateBlogForm = () => (
-    <Togglable labelName="Create blog post" ref={newBlogFormRef}>
-      <BlogForm handleCreateBlog={handleCreateBlog} />
-    </Togglable>
+    <BlogForm newBlogFormRef={newBlogFormRef}/>
   )
 
   return (

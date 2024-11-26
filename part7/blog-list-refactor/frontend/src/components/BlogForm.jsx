@@ -1,29 +1,33 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogListReducer'
+import Togglable from './Togglable'
 
-const BlogForm = ({ handleCreateBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+const BlogForm = ({ newBlogFormRef }) => {
+  const dispatch = useDispatch()
 
-  const createBlog = (event) => {
+  const handleCreateBlog = (event) => {
     event.preventDefault()
-    handleCreateBlog({ title, author, url })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    const title = event.target.title.value
+    const author = event.target.author.value
+    const url = event.target.url.value
+    dispatch(createBlog({
+      title,
+      author,
+      url
+    }))
+    newBlogFormRef.current.toggleVisibility()
   }
 
   return (
-    <>
+    <Togglable labelName="Create blog post" ref={newBlogFormRef}>
       <h2>create</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={handleCreateBlog}>
         title:
         <input
           data-testid="titleInput"
           className="titleInput"
           type="text"
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
+          name='title'
         />
         <br />
         author:
@@ -31,8 +35,7 @@ const BlogForm = ({ handleCreateBlog }) => {
           data-testid="authorInput"
           className="authorInput"
           type="text"
-          value={author}
-          onChange={({ target }) => setAuthor(target.value)}
+          name='author'
         />
         <br />
         url:
@@ -40,14 +43,13 @@ const BlogForm = ({ handleCreateBlog }) => {
           data-testid="urlInput"
           className="urlInput"
           type="text"
-          value={url}
-          onChange={({ target }) => setUrl(target.value)}
+          name='url'
         />
         <button className="submitButton" type="submit">
           save
         </button>
       </form>
-    </>
+    </Togglable>
   )
 }
 
