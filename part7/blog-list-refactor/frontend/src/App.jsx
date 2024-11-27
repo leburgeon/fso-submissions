@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { setThenClearNotification } from './reducers/notificationReducer'
 import BlogList from './components/BlogList'
-import { logout } from './reducers/userReducer'
 import { setUser } from './reducers/userReducer'
+import { Routes, Route, Link, Navigate } from 'react-router-dom'
+import LogoutButton from './components/LogoutButton'
+import PrivateRoutes from './components/PrivateRoutes'
 
 const App = () => {
   const newBlogFormRef = useRef()
@@ -32,32 +33,26 @@ const App = () => {
     }
   }, [])
 
+  const padding = { padding: '5px' }
 
-  const displayLoginForm = () => (
-    <LoginForm/>
-  )
-
-  const displayBlogs = () => (
-    <>
-      <p>{user.name} logged in</p>
-      <button onClick={() => {dispatch(logout())}}>
-        log out
-      </button>
-      <h2>blogs</h2>
-      <BlogList/>
-    </>
-  )
-
-  const displayCreateBlogForm = () => (
-    <BlogForm newBlogFormRef={newBlogFormRef}/>
-  )
 
   return (
     <div>
-      {<Notification/>}
-      {!user && displayLoginForm()}
-      {user && displayBlogs()}
-      {user && displayCreateBlogForm()}
+      <Notification/>
+      <div>
+        <Link style={padding} to='/'>Home</Link>
+        <Link style={padding} to='/blogs'>Blogs</Link>
+        <Link style={padding} to='/users'>Users</Link>
+        {user ? <LogoutButton/> : <Link style={padding} to='/login'>Login</Link>}
+      </div>
+      <Routes>
+        <Route path='/' element={<p>Welcome</p>}/>
+        <Route path='/login' element={<LoginForm/>}/>
+        <Route element={<PrivateRoutes/>}>
+          <Route path='/blogs' element={<BlogList newBlogFormRef={newBlogFormRef}/>}/>
+          <Route path='/users' element={<UsersList/>}/>
+        </Route>
+      </Routes>
     </div>
   )
 }

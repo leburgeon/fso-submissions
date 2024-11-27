@@ -5,7 +5,16 @@ import { setThenClearNotification } from './notificationReducer'
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: null,
+  // Attempts to initialise the user state from the user in local storage
+  initialState: () => {
+    try {
+      const userFromLocal = localStorage.getItem('loggedInBlogUser')
+      const parsedUser = JSON.parse(userFromLocal)
+      return parsedUser
+    } catch (e) {
+      return null
+    }
+  },
   reducers: {
     setUserState(state, action) {
       return action.payload
