@@ -1,19 +1,21 @@
-import { useRef} from 'react'
+import { useRef } from 'react'
 import Togglable from './Togglable'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, updateBlog } from '../reducers/blogListReducer'
 
-const Blog = ({ blog, loggedInUser }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const detailsDisplayRef = useRef()
 
   let deleteButtonStyle = { display: '' }
 
+  const user = useSelector(store => store.user)
+
   // Ensures that the delete button is not visible if the user is not the creator of the blog post
   if (blog.user) {
     if (blog.user.username) {
       deleteButtonStyle = {
-        display: loggedInUser.username !== blog.user.username ? 'none' : '',
+        display: user.username !== blog.user.username ? 'none' : '',
       }
     }
   }

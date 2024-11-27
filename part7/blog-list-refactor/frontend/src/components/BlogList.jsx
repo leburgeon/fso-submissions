@@ -3,7 +3,7 @@ import { initialseBlogs } from '../reducers/blogListReducer'
 import Blog from './Blog'
 import { useEffect } from 'react'
 
-const BlogList = ({ user, handleDeleteBlog, handleLikeBlog }) => {
+const BlogList = () => {
 
   // When the bloglist component rendered first, the blogs are initialised
   const dispatch = useDispatch()
@@ -17,11 +17,8 @@ const BlogList = ({ user, handleDeleteBlog, handleLikeBlog }) => {
   return (
     blogs.map((blog) => (
       <Blog
-        loggedInUser={user}
         key={blog.id}
         blog={blog}
-        handleLike={handleLikeBlog}
-        handleDelete={handleDeleteBlog}
       />
     ))
   )

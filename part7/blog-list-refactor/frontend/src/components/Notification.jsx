@@ -8,7 +8,7 @@ const inline = {
   textAlign: 'center',
 }
 
-const Notification = ({ message }) => {
+const Notification = () => {
   const notificaiton = useSelector(state => state.notification)
 
   if (!notificaiton) {

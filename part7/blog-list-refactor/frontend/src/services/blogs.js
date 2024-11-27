@@ -1,11 +1,9 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
-console.log('token set to null')
 let token = null
 
 const setToken = (userToken) => {
-  console.log('token set to usertoken', userToken)
   token = userToken
 }
 
