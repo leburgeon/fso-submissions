@@ -20,8 +20,6 @@ export const { setNotificationMessage, clearNotificationMessage } = notification
 // It returns a thunk function that dispatches actions to the store to set the notification message
 // and then clears it after the specified number of seconds.
 export const setThenClearNotification = (message, seconds) => {
-  console.log('#################################')
-  console.log()
   return dispatch => {
     dispatch(setNotificationMessage(message))
     setTimeout(() => {

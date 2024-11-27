@@ -1,24 +1,21 @@
-import { useState } from 'react'
-import blogs from '../services/blogs'
+import { useRef} from 'react'
+import Togglable from './Togglable'
+import { useDispatch } from 'react-redux'
+import { deleteBlog, updateBlog } from '../reducers/blogListReducer'
 
-const Blog = ({ blog, handleLike, handleDelete, loggedInUser }) => {
-  const [showDetails, setShowDetails] = useState(false)
-
-  const hideWhenVisible = { display: showDetails ? 'none' : '' }
-  const showWhenVisible = { display: showDetails ? '' : 'none' }
+const Blog = ({ blog, loggedInUser }) => {
+  const dispatch = useDispatch()
+  const detailsDisplayRef = useRef()
 
   let deleteButtonStyle = { display: '' }
 
+  // Ensures that the delete button is not visible if the user is not the creator of the blog post
   if (blog.user) {
     if (blog.user.username) {
       deleteButtonStyle = {
         display: loggedInUser.username !== blog.user.username ? 'none' : '',
       }
     }
-  }
-
-  const toggleShowDetails = () => {
-    setShowDetails(!showDetails)
   }
 
   const displayUserDetails = blog.user ? blog.user.username : 'anon'
@@ -40,32 +37,26 @@ const Blog = ({ blog, handleLike, handleDelete, loggedInUser }) => {
         <button
           style={deleteButtonStyle}
           className="blogDeleteButton"
-          onClick={() => handleDelete(blog)}
+          onClick={() => dispatch(deleteBlog(blog.id))}
         >
           Delete
         </button>
       </div>
-      <div style={hideWhenVisible}>
-        <button className="showButton" onClick={toggleShowDetails}>
-          Show details
-        </button>
-      </div>
-      <div style={showWhenVisible} data-testid="infoDiv" className="infoDiv">
-        <div className="likesDiv">
-          <span className="likeCountSpan">{blog.likes} likes</span>
-          <button className="likeButton" onClick={() => handleLike(blog)}>
-            Like
-          </button>
+      <Togglable labelName="Show details" href={detailsDisplayRef}>
+        <div data-testid="infoDiv" className="infoDiv">
+          <div className="likesDiv">
+            <span className="likeCountSpan">{blog.likes} likes</span>
+            <button className="likeButton" onClick={() => dispatch(updateBlog({ likes: blog.likes + 1 || 1, id: blog.id }))}>
+              Like
+            </button>
+          </div>
+          <a href={blog.url} className="blogUrl">
+            {blog.url}
+          </a>
+          <div className="userDetailsDiv">{displayUserDetails}</div>
+          <br />
         </div>
-        <a href={blog.url} className="blogUrl">
-          {blog.url}
-        </a>
-        <div className="userDetailsDiv">{displayUserDetails}</div>
-        <br />
-        <button className="hideButton" onClick={toggleShowDetails}>
-          Hide details
-        </button>
-      </div>
+      </Togglable>
     </div>
   )
 }
