@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogListReducer'
 import Togglable from './Togglable'
+import { TextField, Button } from '@mui/material'
 
 const BlogForm = ({ newBlogFormRef }) => {
   const dispatch = useDispatch()
@@ -22,32 +23,32 @@ const BlogForm = ({ newBlogFormRef }) => {
     <Togglable labelName="Create blog post" ref={newBlogFormRef}>
       <h2>create</h2>
       <form onSubmit={handleCreateBlog}>
-        title:
-        <input
+        <TextField
+          label='Title'
           data-testid="titleInput"
           className="titleInput"
           type="text"
           name='title'
         />
         <br />
-        author:
-        <input
+        <TextField
+          label='Author'
           data-testid="authorInput"
           className="authorInput"
           type="text"
           name='author'
         />
         <br />
-        url:
-        <input
+        <TextField
+          label='Url'
           data-testid="urlInput"
           className="urlInput"
           type="text"
           name='url'
         />
-        <button className="submitButton" type="submit">
+        <Button className="submitButton" type="submit">
           save
-        </button>
+        </Button>
       </form>
     </Togglable>
   )

@@ -1,12 +1,5 @@
 import { useSelector } from 'react-redux'
-
-const inline = {
-  backgroundColor: 'grey',
-  padding: '10px',
-  borderRadius: '5px',
-  color: 'white',
-  textAlign: 'center',
-}
+import { Alert } from '@mui/material'
 
 const Notification = () => {
   const notificaiton = useSelector(state => state.notification)
@@ -16,7 +9,7 @@ const Notification = () => {
   }
   return (
     <>
-      <div style={inline}>{notificaiton}</div>
+      <Alert severity='error'>{notificaiton}</Alert>
     </>
   )
 }

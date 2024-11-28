@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { addComment, commentOnBlog, updateBlog } from '../reducers/blogListReducer'
+import { commentOnBlog, updateBlog } from '../reducers/blogListReducer'
 import { Link } from 'react-router-dom'
 import CommentsList from './CommentsList'
+import { TextField, Button, StepIcon } from '@mui/material'
 
 const BlogDisplay = ({ blogToDisplayId }) => {
 
@@ -16,9 +17,9 @@ const BlogDisplay = ({ blogToDisplayId }) => {
     <h2>{blogToDisplay.title}</h2>
     <div>
       <div>{blogToDisplay.likes} likes </div>
-      <button className="likeButton" onClick={() => dispatch(updateBlog({ likes: blogToDisplay.likes + 1 || 1, id: blogToDisplay.id }))}>
+      <Button variant='contained' className="likeButton" onClick={() => dispatch(updateBlog({ likes: blogToDisplay.likes + 1 || 1, id: blogToDisplay.id }))}>
         Like
-      </button>
+      </Button>
       <div>
         {blogToDisplay.user
           ? <div>
@@ -33,8 +34,12 @@ const BlogDisplay = ({ blogToDisplayId }) => {
         dispatch(commentOnBlog(blogToDisplay.id, commnet))
         event.target.comment.value = ''
       }}>
-        <input type='text' placeholder='Add comment' name='comment'/>
-        <button type='submit'>Send</button>
+        <div>
+          <TextField type='text' placeholder='Add comment' name='comment'/>
+        </div>
+        <div>
+          <Button style={{ margin: '5px' }} variant='contained' type='submit'>Send</Button>
+        </div>
       </form>
     </div>
   </>)

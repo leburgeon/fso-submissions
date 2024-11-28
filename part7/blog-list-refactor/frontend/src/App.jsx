@@ -12,7 +12,7 @@ import PrivateRoutes from './components/PrivateRoutes'
 import UsersList from './components/UsersList'
 import UserDisplay from './components/UserDisplay'
 import BlogDisplay from './components/BlogDisplay'
-import { Container } from '@mui/material'
+import { AppBar, Container, Toolbar, Button } from '@mui/material'
 
 const App = () => {
   const newBlogFormRef = useRef()
@@ -55,12 +55,22 @@ const App = () => {
   return (
     <Container>
       <Notification/>
-      <div>
-        <Link style={padding} to='/'>Home</Link>
-        <Link style={padding} to='/blogs'>Blogs</Link>
-        <Link style={padding} to='/users'>Users</Link>
-        {user ? <LogoutButton/> : <Link style={padding} to='/login'>Login</Link>}
-      </div>
+      <AppBar position='static'>
+        <Toolbar>
+          <Button color='inherit' component={Link} to='/'>
+            home
+          </Button>
+          <Button color='inherit' component={Link} to='/blogs'>
+            Blogs
+          </Button>
+          <Button color='inherit' component={Link} to='/users'>
+            Users
+          </Button>
+          {user
+            ? <Button color='inherit' component={LogoutButton}/>
+            : <Button color='inherit' component={Link} to='/login'>Login</Button>}
+        </Toolbar>
+      </AppBar>
       <Routes>
         <Route path='/' element={<p>Welcome</p>}/>
         <Route path='/login' element={<LoginForm/>}/>

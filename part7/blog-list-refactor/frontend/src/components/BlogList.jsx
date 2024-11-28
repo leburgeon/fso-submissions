@@ -3,7 +3,7 @@ import { initialseBlogs } from '../reducers/blogListReducer'
 import Blog from './Blog'
 import { useEffect } from 'react'
 import BlogForm from './BlogForm'
-import { Paper, TableContainer } from '@mui/material'
+import { Paper, TableContainer, Table, TableBody } from '@mui/material'
 
 const BlogList = ({ newBlogFormRef }) => {
 
@@ -17,15 +17,21 @@ const BlogList = ({ newBlogFormRef }) => {
   const blogs = useSelector(store => store.blogList)
 
   return (
-    <TableContainer component={Paper}>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-        />
-      ))}
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {blogs.map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <BlogForm newBlogFormRef={newBlogFormRef}/>
-    </TableContainer>
+    </>
   )
 }
 
