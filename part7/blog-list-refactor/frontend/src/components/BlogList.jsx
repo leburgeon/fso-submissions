@@ -4,7 +4,7 @@ import Blog from './Blog'
 import { useEffect } from 'react'
 import BlogForm from './BlogForm'
 
-const BlogList = ({newBlogFormRef}) => {
+const BlogList = ({ newBlogFormRef }) => {
 
   // When the bloglist component rendered first, the blogs are initialised
   const dispatch = useDispatch()

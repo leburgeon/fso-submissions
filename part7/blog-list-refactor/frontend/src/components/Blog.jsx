@@ -1,11 +1,10 @@
-import { useRef } from 'react'
-import Togglable from './Togglable'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlog, updateBlog } from '../reducers/blogListReducer'
+import { deleteBlog} from '../reducers/blogListReducer'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
-  const detailsDisplayRef = useRef()
 
   let deleteButtonStyle = { display: '' }
 
@@ -20,8 +19,6 @@ const Blog = ({ blog }) => {
     }
   }
 
-  const displayUserDetails = blog.user ? blog.user.username : 'anon'
-
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -34,7 +31,7 @@ const Blog = ({ blog }) => {
     <div style={blogStyle} className="blogDiv">
       <div className="titleAndAuthorDiv">
         <span className="titleAndAuthorSpan">
-          {blog.title} {blog.author}
+          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
         </span>
         <button
           style={deleteButtonStyle}
@@ -44,21 +41,6 @@ const Blog = ({ blog }) => {
           Delete
         </button>
       </div>
-      <Togglable labelName="Show details" href={detailsDisplayRef}>
-        <div data-testid="infoDiv" className="infoDiv">
-          <div className="likesDiv">
-            <span className="likeCountSpan">{blog.likes} likes</span>
-            <button className="likeButton" onClick={() => dispatch(updateBlog({ likes: blog.likes + 1 || 1, id: blog.id }))}>
-              Like
-            </button>
-          </div>
-          <a href={blog.url} className="blogUrl">
-            {blog.url}
-          </a>
-          <div className="userDetailsDiv">{displayUserDetails}</div>
-          <br />
-        </div>
-      </Togglable>
     </div>
   )
 }

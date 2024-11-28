@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { setThenClearNotification } from './notificationReducer'
+import { logout } from './userReducer'
 
 const blogListSlice = createSlice({
   name: 'blogList',
@@ -45,7 +46,12 @@ export const createBlog = (blogToCreate) => {
       dispatch(setThenClearNotification('blog succesfully added', 5))
       dispatch(appendBlog(addedBlog))
     } catch (e) {
-      dispatch(setThenClearNotification('blog not added' + e.name, 5))
+      if (e.response?.data?.error === 'Token expired, re login'){
+        dispatch(setThenClearNotification('token expired, please re-login', 5))
+        dispatch(logout())
+      } else {
+        dispatch(setThenClearNotification('blog not added' + e.name, 5))
+      }
     }
   }
 }
