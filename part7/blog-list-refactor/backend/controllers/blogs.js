@@ -64,4 +64,19 @@ blogsRouter.put('/:id', async (req, res) => {
   res.status(200).json(updatedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (req, res) => {
+  console.log('#################################')
+  console.log()
+  const blogToComment = await Blog.findById(req.params.id)
+  const newComment = req.body.comment.trim()
+
+  if (newComment === ''){
+    return res.status(400).json({error: 'Comment cannot be empty'})
+  }
+  blogToComment.comments.push(newComment)
+  await blogToComment.save()
+
+  return res.status(200).end()
+})
+
 module.exports = blogsRouter

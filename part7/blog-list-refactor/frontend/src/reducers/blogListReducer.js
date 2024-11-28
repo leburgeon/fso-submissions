@@ -20,11 +20,15 @@ const blogListSlice = createSlice({
       return state.map(blog => blog.id === action.payload.id
         ? action.payload
         : blog)
+    },
+    addComment(state, action) {
+      const blogToComment = state.find(blog => blog.id === action.payload.id)
+      blogToComment.comments.push(action.payload.comment)
     }
   }
 })
 
-export const { setBlogs, appendBlog, removeBlog, replaceBlog } = blogListSlice.actions
+export const { setBlogs, appendBlog, removeBlog, replaceBlog, addComment } = blogListSlice.actions
 
 export default blogListSlice.reducer
 
@@ -83,6 +87,19 @@ export const updateBlog = (fields) => {
       console.log('#################################')
       console.log(e)
       dispatch(setThenClearNotification('failed to update the blog with fields ' + fields, 5))
+    }
+  }
+}
+
+export const commentOnBlog = (blogId, comment) => {
+  return async dispatch => {
+    try {
+      await blogService.comment(blogId, comment)
+      dispatch(addComment({ id: blogId, comment }))
+    } catch (e) {
+      console.log('#################################')
+      console.log(e)
+      dispatch(setThenClearNotification('failed to comment on blog', 5))
     }
   }
 }
