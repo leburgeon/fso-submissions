@@ -12,6 +12,7 @@ import PrivateRoutes from './components/PrivateRoutes'
 import UsersList from './components/UsersList'
 import UserDisplay from './components/UserDisplay'
 import BlogDisplay from './components/BlogDisplay'
+import { Container } from '@mui/material'
 
 const App = () => {
   const newBlogFormRef = useRef()
@@ -52,7 +53,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <Container>
       <Notification/>
       <div>
         <Link style={padding} to='/'>Home</Link>
@@ -70,7 +71,7 @@ const App = () => {
           <Route path='/blogs/:id' element={<BlogDisplay blogToDisplayId={blogToDisplayId}/>}/>
         </Route>
       </Routes>
-    </div>
+    </Container>
   )
 }
 

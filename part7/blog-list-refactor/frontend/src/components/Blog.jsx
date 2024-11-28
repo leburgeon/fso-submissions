@@ -2,6 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog} from '../reducers/blogListReducer'
 import { Link } from 'react-router-dom'
+import { TableCell, TableRow } from '@mui/material'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
@@ -28,20 +29,19 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div style={blogStyle} className="blogDiv">
-      <div className="titleAndAuthorDiv">
-        <span className="titleAndAuthorSpan">
-          <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
-        </span>
+    <TableRow>
+      <TableCell>
+        <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+      </TableCell>
+      <TableCell>
         <button
           style={deleteButtonStyle}
           className="blogDeleteButton"
-          onClick={() => dispatch(deleteBlog(blog.id))}
-        >
-          Delete
+          onClick={() => dispatch(deleteBlog(blog.id))}>
+            Delete
         </button>
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   )
 }
 

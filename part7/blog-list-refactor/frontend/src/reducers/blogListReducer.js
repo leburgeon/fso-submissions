@@ -97,8 +97,6 @@ export const commentOnBlog = (blogId, comment) => {
       await blogService.comment(blogId, comment)
       dispatch(addComment({ id: blogId, comment }))
     } catch (e) {
-      console.log('#################################')
-      console.log(e)
       dispatch(setThenClearNotification('failed to comment on blog', 5))
     }
   }
