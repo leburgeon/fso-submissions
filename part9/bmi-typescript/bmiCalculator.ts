@@ -1,9 +1,9 @@
-interface healthData {
+interface bmiValues {
   heightInCm: number,
   massInKg: number
 }
 
-const parseArguments = (args: string[]): healthData => {
+const parseArguments = (args: string[]): bmiValues => {
   // Ensures proper usage
   if (args.length !== 4){
     throw new Error('Please provide two arguments: height in cm and mass in kg')
@@ -16,6 +16,19 @@ const parseArguments = (args: string[]): healthData => {
     heightInCm: Number(args[2]),
     massInKg: Number(args[3])
   }
+}
+
+export const parseBmiArgs = (
+  height: number,
+  weight: number
+) : bmiValues => {
+  if (!isNaN(height) && !isNaN(weight)){
+    return {
+      heightInCm: height,
+      massInKg: weight
+    }
+  } 
+  throw new Error('The values were not numbers!')
 }
 
 const calculateBmi = (heightInCm: number, massInKg: number): string => {
@@ -36,13 +49,17 @@ const calculateBmi = (heightInCm: number, massInKg: number): string => {
   return 'weight range is ' + message
 }
 
-try {
-  const { heightInCm, massInKg } = parseArguments(process.argv)
-  console.log(calculateBmi(heightInCm, massInKg))
-} catch (error: unknown) {
-  let errorMessage = 'Somthing went wrong'
-  if (error instanceof Error){
-    errorMessage += `Error: ${error.message}`
+export default calculateBmi
+
+if (require.main === module){
+  try {
+    const { heightInCm, massInKg } = parseArguments(process.argv)
+    console.log(calculateBmi(heightInCm, massInKg))
+  } catch (error: unknown) {
+    let errorMessage = 'Somthing went wrong'
+    if (error instanceof Error){
+      errorMessage += `Error: ${error.message}`
+    }
+    console.log(errorMessage)
   }
-  console.log(errorMessage)
 }
