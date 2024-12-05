@@ -6,11 +6,18 @@ export type Diagnosis = {
 
 export type NewPatient = Omit<Patient, 'id'>;
 
+export enum Gender {
+  male = 'male',
+  female = 'female',
+  nonBinary = 'enby',
+  other = 'other'
+}
+
 export type Patient = {
   id: string,
   name: string,
   dateOfBirth: string,
-  gender: string,
+  gender: Gender,
   ssn: string,
   occupation: string,
 };
