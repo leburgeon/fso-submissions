@@ -4,6 +4,8 @@ export type Diagnosis = {
   latin?: string
 };
 
+export type NewPatient = Omit<Patient, 'id'>;
+
 export type Patient = {
   id: string,
   name: string,
